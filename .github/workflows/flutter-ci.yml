@@ -1,0 +1,35 @@
+name: Flutter CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Dastur fayllarini yuklash
+      uses: actions/checkout@v3
+
+    - name: Flutterni o‘rnatish
+      uses: subosito/flutter-action@v2
+      with:
+        channel: stable
+
+    - name: Paketlarni yuklab olish
+      run: flutter pub get
+
+    - name: Testlarni ishga tushirish
+      run: flutter test
+
+    - name: APK build qilish
+      run: flutter build apk --release
+
+    - name: Tayyor APK’ni yuklab olishga berish
+      uses: actions/upload-artifact@v3
+      with:
+        name: release-apk
+        path: build/app/outputs/flutter-apk/app-release.apk
